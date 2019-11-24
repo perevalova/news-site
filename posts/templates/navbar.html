@@ -1,0 +1,44 @@
+{% load i18n %}
+<!-- Start Container -->
+<div class="container">
+
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top" id="navbar">
+        <a class="navbar-brand"
+           href="{% url 'home' %}">News</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                {% url "home" as home_url %}
+{#                {% url "about" as about_url %}#}
+{#                <li class="nav-item {% if request.path == posts_url %}active{% endif %}">#}
+{#                    <a class="nav-link"#}
+{#                       href="{% url 'home' %}">News</a>#}
+{#                </li>#}
+                <li class="nav-item {% if about_url in request.path %}active{% endif %}">
+                    {#                    <a class="nav-link"#}
+                    {#                       href="{% url 'about' %}">Profile</a>#}
+                    {% if user.is_authenticated %}
+                        <!-- User's toolbar for authenticated users -->
+                        <div class="col-xs-2" id="user-toolbar">
+                            <span>{{ user }}</span> |
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    {% else %}
+                        <!-- User's toolbar for anonymous users -->
+                        <div class="col-xs-6" id="user-toolbar">
+                            <a href="{% url 'login' %}">Login</a> |
+                            <a href="{% url 'signup' %}">Signup</a>
+                        </div>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

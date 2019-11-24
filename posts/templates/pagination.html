@@ -1,0 +1,18 @@
+{% if is_paginated %}
+<nav class="pagination2">
+	<ul class="pagination">
+		<li class="page-item">
+            <a href="?page=1" class="page-link">&laquo;</a>
+        </li>
+        {% for p in post_list.paginator.page_range %}
+        <li {% if post_list.number == p %}class="active"{% endif %}>
+            <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+        </li>        
+        {% endfor %}
+        <li class="page-item">
+            <a href="?page={{ paginator.num_pages }}" class="page-link">
+            &raquo;</a>
+        </li>
+	</ul>
+</nav>
+{% endif%}

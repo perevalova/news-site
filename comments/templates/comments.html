@@ -1,0 +1,37 @@
+{% block comment %}
+    {% load crispy_forms_tags %}
+    {% load static from staticfiles %}
+    <!-- Comments -->
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-body">
+            <h2>{{ comments.count }} comments</h2>
+
+            {% for comment in comments %}
+                <div class="comments" style="padding: 10px;">
+                    <p class="font-weight-bold">
+                        {{ comment.author }}
+                        <span class=" text-muted font-weight-normal">
+              {{ comment.created_on }}
+            </span>
+                    </p>
+                    {{ comment.body | linebreaks }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Add comment form -->
+    {% if user.is_authenticated %}
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-body">
+            <h3>Leave a comment</h3>
+            <form method="post" style="margin-top: 1.3em;">
+                {{ comment_form|crispy }}
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+{% endblock comment %}

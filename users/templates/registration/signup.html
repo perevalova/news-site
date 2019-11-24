@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %}
+    {% load crispy_forms_tags %}
+    <div class="container main-content text-center">
+        {% block title %}<h1>Please Sign Up</h1>{% endblock %}
+        <div class="row justify-content-center align-items-center">
+            {% csrf_token %}
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}
