@@ -49,17 +49,11 @@ docs/_build/
 # db
 db*
 
-# secret
-email.py
-
-#Ignore modules
-db_settings.py
-soc_settings.py
-dev_settings.py
+# Ignore modules
 .idea/
-
-# Logging file
-studentsdb2.log
 
 # Python Decouple
 *.env
+
+# Ignore media
+/media/
