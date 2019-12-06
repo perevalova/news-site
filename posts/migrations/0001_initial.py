@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('attachment', models.FileField(blank=True, error_messages={'invalid_extension': 'Unsupported file extension'}, null=True, upload_to='files/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=('jpg', 'jpeg', 'png'))])),
                 ('updated_on', models.DateTimeField(auto_now=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('UNPUBLISHED', 'unpublished'), ('APPROVE', 'approve'), ('DECLINE', 'decline')], default='UNPUBLISHED', max_length=12)),
+                ('status', models.CharField(choices=[('1', 'unpublished'), ('2', 'approve'), ('3', 'decline')], default='1', max_length=12)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
