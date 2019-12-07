@@ -38,7 +38,7 @@ class UserSignup(View):
             user.save()
 
             # Send an email to the user with the token:
-            mail_subject = 'Activate your account.'
+            mail_subject = 'Activate your account'
             current_site = get_current_site(request)
             message = render_to_string('activate_account.html', {
                 'user': user,
@@ -47,12 +47,13 @@ class UserSignup(View):
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
-            # send_mail(mail_subject, message, 'test@newssite.com', [to_email])
 
             send_confirm_email.delay(mail_subject, message, to_email)
             return HttpResponse('Please confirm your email address to complete the registration')
         else:
-            form = UserSignupForm()
+            form = UserSignupForm(request.POST)
+            return render(request, 'registration/signup.html', {'form': form})
+
 
 
 class Activate(View):
