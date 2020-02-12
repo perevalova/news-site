@@ -1,7 +1,7 @@
 amqp==2.5.2
 billiard==3.6.1.0
 celery==4.3.0
-Django==2.2.8
+Django==2.2.10
 django-ckeditor==5.8.0
 django-crispy-forms==1.8.0
 django-js-asset==1.2.2
