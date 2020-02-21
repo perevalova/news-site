@@ -1,7 +1,7 @@
 
 
 # News project
-Test project for Planeks
+Test project
 
 ## Installation
 
