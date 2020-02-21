@@ -9,14 +9,15 @@ from news_project import settings
 
 class PostApproveManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(status='APPROVE')
+        return super().get_queryset().filter(status=Post.APPROVE)
 
 
 class Post(models.Model):
+    UNPUBLISHED, APPROVE, DECLINE = 0, 1, 2
     MODERATION_CHOICES = [
-        ('1', 'unpublished'),
-        ('2', 'approve'),
-        ('3', 'decline'),
+        (UNPUBLISHED, 'unpublished'),
+        (APPROVE, 'approve'),
+        (DECLINE, 'decline'),
     ]
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
@@ -29,7 +30,7 @@ class Post(models.Model):
                                 'invalid_extension': 'Unsupported file extension'})
     updated_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=12, choices=MODERATION_CHOICES, default='1')
+    status = models.IntegerField(choices=MODERATION_CHOICES, default=0)
 
     objects = models.Manager() # Default manager
     approved = PostApproveManager()  # New manager for approved posts

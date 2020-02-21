@@ -39,7 +39,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
         # Save post with an 'approve' status for 'admins' and 'editors' groups
         group = self.request.user.groups.values_list('name').first()[0]
         if group == 'admins' or group == 'editors':
-            post.status = '2'
+            post.status = Post.APPROVE
         post.save()
         return redirect(post)
 
