@@ -56,4 +56,4 @@ db*
 *.env
 
 # Ignore media
-/media/
+media/
