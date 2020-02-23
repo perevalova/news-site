@@ -18,7 +18,24 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-#### 3. Run sever:
+#### 3. Create .env file with secret information:
+
+For example:
+SECRET_KEY=your_data 
+
+#### 4. Start redis server:
+
+```bash
+ redis-server
+```
+
+#### 5. Start celery:
+
+```bash
+ celery -A news_project worker -l info
+```
+
+#### 6. Run server:
 
 ```bash
 python manage.py runserver
