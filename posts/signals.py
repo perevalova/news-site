@@ -1,6 +1,7 @@
 import os
 
-from django.db.models.signals import post_delete, pre_save, post_save
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_delete, pre_save, post_save, m2m_changed
 from django.dispatch import receiver
 
 from news_project import settings
@@ -46,3 +47,30 @@ def create_personal_blog(sender, instance, created, **kwargs):
     """
     if created:
         PersonalBlog.objects.create(author=instance)
+
+
+@receiver(m2m_changed, sender=PersonalBlog.subscriptions.through)
+def followers_and_read_post(sender, instance, action, reverse, *args, **kwargs):
+    """
+    Add or remove followers when changing subscriptions.
+    Also remove read posts when remove subscription.
+    """
+    if action == 'pre_add':
+        author = instance.author_id # id of author that added subscription
+        User = get_user_model()
+        user = User.objects.get(id=author)
+        sub = kwargs['pk_set'] # id of added subscription
+        for pk in sub:
+            pb = PersonalBlog.objects.get(author_id=pk)
+            pb.followers.add(user)
+    if action == 'pre_remove':
+        author = instance.author_id # id of author that removed subscription
+        User = get_user_model()
+        user = User.objects.get(id=author)
+        sub = kwargs['pk_set'] # id of removed subscription
+        for pk in sub:
+            pb = PersonalBlog.objects.get(author_id=pk)
+            pb.followers.remove(user)
+            # removing read posts of removed subscription
+            posts = Post.objects.filter(author_id=pk)
+            instance.read_posts.remove(*posts)

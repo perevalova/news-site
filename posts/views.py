@@ -1,4 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import CreateView, ListView, DetailView
@@ -101,3 +103,29 @@ class UserList(ListView):
 class UserDetail(DetailView):
     model = PersonalBlog
     template_name = 'user_detail.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_list'] = Post.approved.filter(author_id=self.object.id).select_related('author')
+        # check if current user follow selected user blog
+        subscriptions = PersonalBlog.objects.get(author_id=self.request.user.id).subscriptions.all()
+        context['following'] = True if self.object.author in subscriptions else False
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Add or remove subscription
+        """
+        action = request.POST.get('action')
+        user_pk = request.POST.get('pk')
+        if action and user_pk:
+            current_blog = PersonalBlog.objects.get(
+                author_id=self.request.user.id)
+            User = get_user_model()
+            user_blog = User.objects.get(id=user_pk)
+            if action == 'follow':
+                current_blog.subscriptions.add(user_blog)
+            else:
+                current_blog.subscriptions.remove(user_blog)
+            return JsonResponse({'status': 'ok'})
