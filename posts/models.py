@@ -48,3 +48,16 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post_detail', kwargs={'slug': self.slug})
+
+
+class PersonalBlog(models.Model):
+    author = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='blog_followers')
+    subscriptions = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='blog_subscriptions')
+    read_posts = models.ManyToManyField(Post, blank=True, related_name='blog_read_posts')
+
+    def __str__(self):
+        return f'{self.author}'
+
+    def get_absolute_url(self):
+        return reverse('user', kwargs={'pk': self.id})

@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import View
 
@@ -78,3 +77,16 @@ class PostDetail(View):
         else:
             return render(request, 'post_detail.html',
                           {'post': post, 'comments': comments, 'form': form})
+
+
+class BlogView(ListView):
+    """
+    Personal blog view
+    """
+    model = Post
+    template_name = 'blog.html'
+    paginate_by = 5
+#
+    def get_queryset(self):
+        posts = Post.approved.filter(author=self.request.user)
+        return posts

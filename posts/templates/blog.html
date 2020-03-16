@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container main-content">
+        <div class="row">
+            <div class="col-md-8 mt-3 left">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2>{{ user }} personal blog</h2>
+                        </div>
+                    </div>
+                {% for object in object_list %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ object.title }}</h2>
+                            <p class="card-text text-muted h6">{{ object.created_on }} </p>
+                            <p class="card-text">{{ object.content|slice:":200" }}</p>
+                            {% if object.attachment %}
+                            <img class="card-img-top"
+                                 src="{{ object.attachment.url }}"
+                                 alt="attach_img">
+                            {% endif %}
+                            <a href="{% url 'post_detail' object.slug %}"
+                               class="btn btn-primary">Read More &rarr;</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Sidebar Column -->
+            <div class="col-md-4 float-right ">
+                <div class="card my-4">
+                    <h5 class="card-header">Tap on button to create a new
+                        post</h5>
+                    <div class="card-body">
+                        <a href="{% url 'post_create' %}"
+                           class="btn btn-success">Create</a>
+                    </div>
+                </div>
+            </div>
+                {% include "pagination.html" %}
+        </div>
+    </div>
+{% endblock %}
