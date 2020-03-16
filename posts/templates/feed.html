@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container main-content">
         <div class="row">
-            <div class="col-md-8 mt-3 left">
+            <div class="col-md-12 mt-3 center">
                 {% for post in post_list %}
                     <div class="card mb-4">
                         <div class="card-body">
@@ -20,17 +20,6 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-            <!-- Sidebar Column -->
-            <div class="col-md-4 float-right ">
-                <div class="card my-4">
-                    <h5 class="card-header">Tap on button to create a new
-                        post</h5>
-                    <div class="card-body">
-                        <a href="{% url 'post_create' %}"
-                           class="btn btn-success">Create</a>
-                    </div>
-                </div>
             </div>
                 {% include "pagination.html" %}
         </div>

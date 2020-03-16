@@ -14,13 +14,18 @@ from posts.tasks import send_comment_email
 
 class PostList(ListView):
     """
-    Showing all posts
+    Showing posts of subscriptions
     """
     model = Post
-    template_name = 'main.html'
+    template_name = 'feed.html'
     context_object_name = 'post_list'
     paginate_by = 5
-    queryset = Post.approved.all()
+
+    def get_queryset(self):
+        blog = PersonalBlog.objects.get(author_id=self.request.user.id)
+        posts = Post.approved.filter(
+            author__in=blog.subscriptions.all()).select_related('author')
+        return posts
 
 
 class PostCreate(LoginRequiredMixin, CreateView):
