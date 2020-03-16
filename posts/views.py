@@ -9,7 +9,7 @@ from django.views.generic.base import View
 from comments.forms import CommentForm
 from posts.forms import PostCreateForm
 from posts.models import Post, PersonalBlog
-from posts.tasks import send_comment_email
+from posts.tasks import send_email_user
 
 
 class PostList(ListView):
@@ -94,8 +94,8 @@ class PostDetail(View):
                 'author': comment.author,
             })
             to_email = [user.email]
-            send_comment_email.delay(mail_subject, message, to_email)
-            return redirect('post_detail', slug=post)
+            send_email_user.delay(mail_subject, message, to_email)
+            return redirect('post_detail', slug=kwargs['slug'])
         else:
             return render(request, 'post_detail.html',
                           {'post': post, 'comments': comments, 'form': form})
