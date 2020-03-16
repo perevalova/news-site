@@ -17,6 +17,12 @@
                             {% endif %}
                             <a href="{% url 'post_detail' post.slug %}"
                                class="btn btn-primary">Read More &rarr;</a>
+                        <!-- Check if post read -->
+                        {% if post in blog.read_posts.all %}
+                            Read
+                        {% else %}
+                            Not Read
+                        {% endif %}
                         </div>
                     </div>
                 {% endfor %}

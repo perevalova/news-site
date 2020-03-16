@@ -27,6 +27,12 @@ class PostList(ListView):
             author__in=blog.subscriptions.all()).select_related('author')
         return posts
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['blog'] = PersonalBlog.objects.prefetch_related(
+            'read_posts').get(author_id=self.request.user.id)
+        return context
+
 
 class PostCreate(LoginRequiredMixin, CreateView):
     """
@@ -56,13 +62,22 @@ class PostDetail(View):
         post = get_object_or_404(Post, slug=kwargs['slug'])
         comments = post.comments.all()
         form = CommentForm()
+        blog = PersonalBlog.objects.get(author_id=self.request.user.id)
         return render(request, 'post_detail.html',
-                      {'post': post, 'comments': comments, 'form': form})
+                      {'post': post, 'comments': comments, 'form': form, 'blog': blog})
 
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, slug=kwargs['slug'])
         comments = post.comments.all()
         form = CommentForm(data=request.POST)
+
+        # mark post as read
+        action = request.POST.get('action')
+        if action:
+            current_blog = PersonalBlog.objects.get(
+                author_id=self.request.user.id)
+            current_blog.read_posts.add(post)
+            return JsonResponse({'status': 'ok'})
         if form.is_valid():
 
             # Create Comment object but don't save to database yet

@@ -15,6 +15,18 @@
                              src="{{ post.attachment.url }}"
                              alt="attach_img">
                     {% endif %}
+                    <!-- Check if post read -->
+                        {% if post in blog.read_posts.all %}
+                            Read
+                        {% else %}
+                            {% csrf_token %}
+                            <a href="#"
+                               data-action="read"
+                               data-url="{{ post.get_absolute_url }}"
+                               class="btn btn-info read">
+                                    Mark as read
+                            </a>
+                        {% endif %}
                 </div>
             </div>
             {% include 'comments.html' %}
