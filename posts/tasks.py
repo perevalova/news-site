@@ -4,5 +4,5 @@ from news_project.settings import DEFAULT_FROM_EMAIL
 
 
 @app.task
-def send_comment_email(mail_subject, message, to_email):
+def send_email_user(mail_subject, message, to_email):
     send_mail(mail_subject, message, DEFAULT_FROM_EMAIL, [to_email])

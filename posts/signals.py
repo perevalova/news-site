@@ -1,11 +1,14 @@
 import os
 
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from django.db.models.signals import post_delete, pre_save, post_save, m2m_changed
 from django.dispatch import receiver
+from django.template.loader import render_to_string
 
 from news_project import settings
 from posts.models import Post, PersonalBlog
+from posts.tasks import send_email_user
 
 
 @receiver(post_delete, sender=Post)
@@ -47,6 +50,28 @@ def create_personal_blog(sender, instance, created, **kwargs):
     """
     if created:
         PersonalBlog.objects.create(author=instance)
+
+
+@receiver(post_save, sender=Post)
+def send_email_to_followers(sender, instance, created, **kwargs):
+    """
+    Send email to followers about new post of their subscriptions
+    """
+    if kwargs.get('update_fields'):
+        # TODO: implement for updated field
+        if instance.status == Post.APPROVE:
+            author = instance.author
+            blog = PersonalBlog.objects.get(author=author)
+            followers = blog.followers.all()
+            mail_subject = f'{author} create new post'
+            current_site = Site.objects.get_current()
+            message = render_to_string('new_post.html', {
+                'author': author,
+                'link': instance.get_absolute_url(),
+                'domain': current_site,
+            })
+            to_email = [follower.email for follower in followers]
+            send_email_user.delay(mail_subject, message, to_email)
 
 
 @receiver(m2m_changed, sender=PersonalBlog.subscriptions.through)
