@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container main-content">
+        <div class="row">
+            <div class="col-md-8 mt-3 left">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ object.author }}</h2>
+                    </div>
+                </div>
+                {% for post in post_list %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ post.title }}</h2>
+                            <p class="card-text text-muted h6">{{ post.author }}
+                                | {{ post.created_on }} </p>
+                            <p class="card-text">{{ post.content|slice:":200" }}</p>
+                            {% if post.attachment %}
+                                <img class="card-img-top"
+                                     src="{{ post.attachment.url }}"
+                                     alt="attach_img">
+                            {% endif %}
+                            <a href="{% url 'post_detail' post.slug %}"
+                               class="btn btn-primary">Read More &rarr;</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Sidebar Column -->
+            <div class="col-md-4 float-right ">
+                <div class="card my-4">
+                    <div class="card-body">
+                        {% if object.author != user %}
+                            {% csrf_token %}
+                            <a href="#"
+                               data-action="{% if following %}un{% endif %}follow"
+                               data-pk="{{ object.author.id }}"
+                               data-url="{{ object.get_absolute_url }}"
+                               class="btn btn-info follow">
+                                {% if following %}
+                                    Unfollow
+                                {% else %}
+                                    Follow
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            {{ object.followers.all.count }} followers
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% include "pagination.html" %}
+        </div>
+    </div>
+{% endblock %}

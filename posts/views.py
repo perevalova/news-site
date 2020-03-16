@@ -1,12 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 from django.views.generic.base import View
 
 from comments.forms import CommentForm
 from posts.forms import PostCreateForm
-from posts.models import Post
+from posts.models import Post, PersonalBlog
 from posts.tasks import send_comment_email
 
 
@@ -86,7 +86,18 @@ class BlogView(ListView):
     model = Post
     template_name = 'blog.html'
     paginate_by = 5
-#
+
     def get_queryset(self):
         posts = Post.approved.filter(author=self.request.user)
         return posts
+
+
+class UserList(ListView):
+    model = PersonalBlog
+    template_name = 'user_list.html'
+    queryset = PersonalBlog.objects.all().select_related('author')
+
+
+class UserDetail(DetailView):
+    model = PersonalBlog
+    template_name = 'user_detail.html'
